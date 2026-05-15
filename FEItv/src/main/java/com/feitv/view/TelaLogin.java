@@ -4,6 +4,7 @@
  */
 package com.feitv.view;
 
+import com.feitv.controller.UsuarioController;
 import com.feitv.dao.UsuarioDAO;
 import javax.swing.JOptionPane;
 
@@ -46,6 +47,7 @@ public class TelaLogin extends javax.swing.JFrame {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jLabel1.setFont(new java.awt.Font("Kristen ITC", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 153, 153));
         jLabel1.setText("FEITV");
 
         jLabel4.setFont(new java.awt.Font("Kristen ITC", 1, 14)); // NOI18N
@@ -128,29 +130,36 @@ public class TelaLogin extends javax.swing.JFrame {
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
         String email = txtEmail.getText();
 
-        String senha = new String(txtSenha.getPassword());
+    String senha =
+            new String(txtSenha.getPassword());
 
-        UsuarioDAO dao = new UsuarioDAO();
+    UsuarioController controller =
+            new UsuarioController();
 
-        boolean login = dao.login(email, senha);
+    boolean login =
+            controller.login(email, senha);
 
-        if (login) {
+    if (login) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Login realizado com sucesso!"
-            );
+        JOptionPane.showMessageDialog(
+                this,
+                "Login realizado com sucesso!"
+        );
 
-        } else {
+        TelaPrincipal tela = new TelaPrincipal();
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Email ou senha incorretos!"
-            );
+        tela.setVisible(true);
 
-        }
+        dispose();
+
+    } else {
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Email ou senha incorretos!"
+        );
     }//GEN-LAST:event_btnEntrarActionPerformed
-
+}
     /**
      * @param args the command line arguments
      */

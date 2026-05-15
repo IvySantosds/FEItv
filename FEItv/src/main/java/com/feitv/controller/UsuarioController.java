@@ -4,10 +4,24 @@
  */
 package com.feitv.controller;
 
-/**
- *
- * @author usuário
- */
+import com.feitv.dao.UsuarioDAO;
+import com.feitv.model.Usuario;
+
 public class UsuarioController {
-    
+
+    public void cadastrar(Usuario usuario) {
+
+        UsuarioDAO dao = new UsuarioDAO();
+
+        dao.cadastrar(usuario);
+
+    }
+
+    public boolean login(String email, String senha) {
+
+        UsuarioDAO dao = new UsuarioDAO();
+
+        return dao.login(email, senha);
+
+    }
 }

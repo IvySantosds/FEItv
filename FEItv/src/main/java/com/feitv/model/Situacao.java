@@ -9,5 +9,9 @@ package com.feitv.model;
  * @author usuário
  */
 public interface Situacao {
-    
+
+    void curtir();
+
+    void descurtir();
+
 }
