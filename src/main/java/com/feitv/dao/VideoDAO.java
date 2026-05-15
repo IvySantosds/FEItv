@@ -1,143 +1,63 @@
 package com.feitv.dao;
 
 import com.feitv.model.Video;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VideoDAO {
 
-    public void cadastrar(Video video)
-            throws Exception {
-
-        Connection conn =
-                Conexao.conectar();
-
-        String sql =
-                "INSERT INTO video(titulo, url, duracao, categoria) VALUES (?, ?, ?, ?)";
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
-        stmt.setString(1,
-                video.getTitulo());
-
-        stmt.setString(2,
-                video.getUrl());
-
-        stmt.setString(3,
-                video.getDuracao());
-
-        stmt.setString(4,
-                video.getCategoria());
-
-        stmt.execute();
-
-        stmt.close();
-
-        conn.close();
-
+    public void cadastrar(Video v) {
+        String sql = "INSERT INTO videos (titulo, url, categoria, duracao, curtidas) VALUES (?, ?, ?, ?, 0)";
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, v.getTitulo());
+            stmt.setString(2, v.getUrl());
+            stmt.setString(3, v.getCategoria());
+            stmt.setString(4, v.getDuracao());
+            stmt.execute();
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
-    public List<Video> listar()
-            throws Exception {
+    public List<Video> listar() {
+        return buscarPorNome(""); 
+    }
 
-        List<Video> lista =
-                new ArrayList<>();
+    public void curtirVideo(int id) {
+        String sql = "UPDATE videos SET curtidas = curtidas + 1 WHERE id = ?";
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.execute();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
 
-        Connection conn =
-                Conexao.conectar();
-
-        String sql =
-                "SELECT * FROM video";
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
-        ResultSet rs =
-                stmt.executeQuery();
-
-        while (rs.next()) {
-
-            Video v =
-                    new Video();
-
-            v.setId(
-                    rs.getInt("id"));
-
-            v.setTitulo(
-                    rs.getString("titulo"));
-
-            v.setUrl(
-                    rs.getString("url"));
-
-            v.setDuracao(
-                    rs.getString("duracao"));
-
-            v.setCategoria(
-                    rs.getString("categoria"));
-
-            v.setCurtidas(
-                    rs.getInt("curtidas"));
-
-            lista.add(v);
-
-        }
-
-        rs.close();
-
-        stmt.close();
-
-        conn.close();
-
+    public List<Video> buscarPorNome(String nome) {
+        List<Video> lista = new ArrayList<>();
+        String sql = "SELECT * FROM videos WHERE titulo ILIKE ? ORDER BY id";
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, "%" + nome + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Video v = new Video();
+                v.setId(rs.getInt("id"));
+                v.setTitulo(rs.getString("titulo"));
+                v.setUrl(rs.getString("url"));
+                v.setCurtidas(rs.getInt("curtidas"));
+                v.setCategoria(rs.getString("categoria"));
+                v.setDuracao(rs.getString("duracao"));
+                lista.add(v);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
         return lista;
-
     }
 
-    public void curtirVideo(int id)
-            throws Exception {
-
-        Connection conn =
-                Conexao.conectar();
-
-        String sql =
-                "UPDATE video SET curtidas = curtidas + 1 WHERE id = ?";
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
-        stmt.setInt(1, id);
-
-        stmt.executeUpdate();
-
-        stmt.close();
-
-        conn.close();
-
+    public void excluir(int id) {
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement("DELETE FROM videos WHERE id = ?")) {
+            stmt.setInt(1, id);
+            stmt.execute();
+        } catch (Exception e) { e.printStackTrace(); }
     }
-public void excluir(int id)
-        throws Exception {
-
-    Connection conn =
-            Conexao.conectar();
-
-    String sql =
-            "DELETE FROM video WHERE id = ?";
-
-    PreparedStatement stmt =
-            conn.prepareStatement(sql);
-
-    stmt.setInt(1, id);
-
-    stmt.executeUpdate();
-
-    stmt.close();
-
-    conn.close();
-
-}
 }

@@ -2,286 +2,145 @@ package com.feitv.view;
 
 import com.feitv.dao.VideoDAO;
 import com.feitv.model.Video;
-
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TelaVideo extends JFrame {
 
-    private JTextField txtTitulo;
-
-    private JTextField txtUrl;
-
-    private JTextField txtDuracao;
-
-    private JTextField txtCategoria;
-
-    private JButton btnSalvar;
-
-    private JButton btnAtualizar;
-
-    private JButton btnCurtir;
-
-    private JButton btnExcluir;
-
-    private JList<String> listaVideos;
-
-    private DefaultListModel<String> modeloLista;
-
-    private List<Video> videos;
+    private JTextField txtTitulo, txtUrl, txtCategoria, txtDuracao, txtBusca;
+    private JTable tabelaVideos;
+    private DefaultTableModel modeloTabela;
+    private VideoDAO dao = new VideoDAO();
 
     public TelaVideo() {
 
-        setTitle("Vídeos");
-
-        setSize(700, 500);
-
+        setTitle("Gerenciar Vídeos");
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
 
-        setLayout(new BorderLayout());
+        JPanel painelCadastro = new JPanel(new GridLayout(5, 2, 5, 5));
+        painelCadastro.setBorder(BorderFactory.createTitledBorder("Administração de Vídeos"));
 
-        JLabel titulo =
-                new JLabel("Cadastro de Vídeos",
-                        SwingConstants.CENTER);
-
-        JPanel painel = new JPanel();
-
-        painel.setLayout(new GridLayout(12, 1, 10, 10));
-
+        painelCadastro.add(new JLabel("Título:"));
         txtTitulo = new JTextField();
+        painelCadastro.add(txtTitulo);
 
+        painelCadastro.add(new JLabel("URL:"));
         txtUrl = new JTextField();
+        painelCadastro.add(txtUrl);
 
-        txtDuracao = new JTextField();
-
+        painelCadastro.add(new JLabel("Categoria:"));
         txtCategoria = new JTextField();
+        painelCadastro.add(txtCategoria);
 
-        btnSalvar = new JButton("Salvar Vídeo");
+        painelCadastro.add(new JLabel("Duração:"));
+        txtDuracao = new JTextField();
+        painelCadastro.add(txtDuracao);
 
-        btnAtualizar = new JButton("Atualizar Lista");
-
-        btnCurtir = new JButton("Curtir ❤️");
-
-        btnExcluir = new JButton("Excluir Vídeo");
-
-        modeloLista = new DefaultListModel<>();
-
-        listaVideos = new JList<>(modeloLista);
-
-        videos = new ArrayList<>();
-
+        JButton btnSalvar = new JButton("Salvar Vídeo");
         btnSalvar.addActionListener(e -> salvarVideo());
+        painelCadastro.add(btnSalvar);
 
-        btnAtualizar.addActionListener(e -> carregarVideos());
+        JButton btnExcluir = new JButton("Excluir Selecionado");
+        btnExcluir.addActionListener(e -> excluirVideo());
+        painelCadastro.add(btnExcluir);
 
+        JPanel painelBuscaCurtir = new JPanel(new BorderLayout(5, 5));
+        painelBuscaCurtir.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+
+        JPanel painelBusca = new JPanel(new BorderLayout());
+        painelBusca.add(new JLabel("Buscar por nome: "), BorderLayout.WEST);
+        txtBusca = new JTextField();
+        painelBusca.add(txtBusca, BorderLayout.CENTER);
+        JButton btnBuscar = new JButton("Pesquisar");
+        btnBuscar.addActionListener(e -> carregarVideos(txtBusca.getText()));
+        painelBusca.add(btnBuscar, BorderLayout.EAST);
+
+        JButton btnCurtir = new JButton("Curtir Vídeo Selecionado");
+        btnCurtir.setBackground(new Color(100, 200, 100));
         btnCurtir.addActionListener(e -> curtirVideo());
 
-        btnExcluir.addActionListener(e -> excluirVideo());
+        painelBuscaCurtir.add(painelBusca, BorderLayout.CENTER);
+        painelBuscaCurtir.add(btnCurtir, BorderLayout.SOUTH);
 
-        painel.add(new JLabel("Título:"));
+        JPanel painelNorte = new JPanel(new BorderLayout(10, 10));
+        painelNorte.add(painelCadastro, BorderLayout.NORTH);
+        painelNorte.add(painelBuscaCurtir, BorderLayout.SOUTH);
 
-        painel.add(txtTitulo);
+        add(painelNorte, BorderLayout.NORTH);
 
-        painel.add(new JLabel("URL:"));
+        modeloTabela = new DefaultTableModel(new Object[]{"ID", "Título", "URL", "Categoria", "Duração", "Curtidas"}, 0);
+        tabelaVideos = new JTable(modeloTabela);
+        add(new JScrollPane(tabelaVideos), BorderLayout.CENTER);
 
-        painel.add(txtUrl);
+        carregarVideos("");
+    }
 
-        painel.add(new JLabel("Duração:"));
-
-        painel.add(txtDuracao);
-
-        painel.add(new JLabel("Categoria:"));
-
-        painel.add(txtCategoria);
-
-        painel.add(btnSalvar);
-
-        painel.add(btnCurtir);
-
-        painel.add(btnExcluir);
-
-        painel.add(btnAtualizar);
-
-        add(titulo, BorderLayout.NORTH);
-
-        add(painel, BorderLayout.WEST);
-
-        add(new JScrollPane(listaVideos),
-                BorderLayout.CENTER);
-
-        carregarVideos();
-
+    private void carregarVideos(String nome) {
+        modeloTabela.setRowCount(0);
+        List<Video> videos = dao.buscarPorNome(nome);
+        for (Video v : videos) {
+            modeloTabela.addRow(new Object[]{
+                v.getId(), 
+                v.getTitulo(), 
+                v.getUrl(), 
+                v.getCategoria(), 
+                v.getDuracao(), 
+                v.getCurtidas()
+            });
+        }
     }
 
     private void salvarVideo() {
-
-        try {
-
-            Video video =
-                    new Video();
-
-            video.setTitulo(
-                    txtTitulo.getText());
-
-            video.setUrl(
-                    txtUrl.getText());
-
-            video.setDuracao(
-                    txtDuracao.getText());
-
-            video.setCategoria(
-                    txtCategoria.getText());
-
-            VideoDAO dao =
-                    new VideoDAO();
-
-            dao.cadastrar(video);
-
-            JOptionPane.showMessageDialog(this,
-                    "Vídeo salvo com sucesso!");
-
-            txtTitulo.setText("");
-
-            txtUrl.setText("");
-
-            txtDuracao.setText("");
-
-            txtCategoria.setText("");
-
-            carregarVideos();
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Erro: " + e.getMessage());
-
+        if (txtTitulo.getText().isEmpty() || txtUrl.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Preencha ao menos Título e URL.");
+            return;
         }
-
-    }
-
-    private void curtirVideo() {
-
-        try {
-
-            int indice =
-                    listaVideos.getSelectedIndex();
-
-            if (indice == -1) {
-
-                JOptionPane.showMessageDialog(this,
-                        "Selecione um vídeo!");
-
-                return;
-
-            }
-
-            Video video =
-                    videos.get(indice);
-
-            VideoDAO dao =
-                    new VideoDAO();
-
-            dao.curtirVideo(video.getId());
-
-            JOptionPane.showMessageDialog(this,
-                    "Vídeo curtido ❤️");
-
-            carregarVideos();
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Erro: " + e.getMessage());
-
-        }
-
+        Video v = new Video();
+        v.setTitulo(txtTitulo.getText());
+        v.setUrl(txtUrl.getText());
+        v.setCategoria(txtCategoria.getText());
+        v.setDuracao(txtDuracao.getText());
+        
+        dao.cadastrar(v);
+        
+        txtTitulo.setText("");
+        txtUrl.setText("");
+        txtCategoria.setText("");
+        txtDuracao.setText("");
+        carregarVideos("");
     }
 
     private void excluirVideo() {
-
-        try {
-
-            int indice =
-                    listaVideos.getSelectedIndex();
-
-            if (indice == -1) {
-
-                JOptionPane.showMessageDialog(this,
-                        "Selecione um vídeo!");
-
-                return;
-
+        int linha = tabelaVideos.getSelectedRow();
+        if (linha != -1) {
+            int id = (int) modeloTabela.getValueAt(linha, 0);
+            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir?");
+            if (confirm == JOptionPane.YES_OPTION) {
+                dao.excluir(id);
+                carregarVideos("");
             }
-
-            Video video =
-                    videos.get(indice);
-
-            VideoDAO dao =
-                    new VideoDAO();
-
-            dao.excluir(video.getId());
-
-            JOptionPane.showMessageDialog(this,
-                    "Vídeo excluído!");
-
-            carregarVideos();
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Erro: " + e.getMessage());
-
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um vídeo para excluir.");
         }
-
     }
 
-    private void carregarVideos() {
-
-        try {
-
-            modeloLista.clear();
-
-            VideoDAO dao =
-                    new VideoDAO();
-
-            videos =
-                    dao.listar();
-
-            for (Video v : videos) {
-
-                modeloLista.addElement(
-                        v.getTitulo() +
-                        " | " +
-                        v.getCategoria() +
-                        " | " +
-                        v.getDuracao() +
-                        " | Curtidas: " +
-                        v.getCurtidas());
-
-            }
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Erro ao carregar vídeos: "
-                            + e.getMessage());
-
+    private void curtirVideo() {
+        int linha = tabelaVideos.getSelectedRow();
+        if (linha != -1) {
+            int id = (int) modeloTabela.getValueAt(linha, 0);
+            dao.curtirVideo(id);
+            carregarVideos(txtBusca.getText());
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um vídeo na tabela para curtir.");
         }
-
     }
 
     public static void main(String[] args) {
-
-        java.awt.EventQueue.invokeLater(() -> {
-
-            new TelaVideo().setVisible(true);
-
-        });
-
+        java.awt.EventQueue.invokeLater(() -> new TelaVideo().setVisible(true));
     }
-
 }

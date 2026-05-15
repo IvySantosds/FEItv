@@ -9,13 +9,13 @@ public class TelaHome extends JFrame {
 
         setTitle("FEItv Home");
 
-        setSize(400, 400);
+        setSize(400, 450);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setLocationRelativeTo(null);
 
-        setLayout(new GridLayout(5, 1, 10, 10));
+        setLayout(new GridLayout(6, 1, 10, 10));
 
         JLabel titulo =
                 new JLabel("FEItv",
@@ -29,6 +29,9 @@ public class TelaHome extends JFrame {
 
         JButton btnPerfil =
                 new JButton("Perfil");
+
+        JButton btnEstatisticas =
+                new JButton("Estatísticas");
 
         JButton btnSair =
                 new JButton("Sair");
@@ -51,6 +54,12 @@ public class TelaHome extends JFrame {
 
         });
 
+        btnEstatisticas.addActionListener(e -> {
+
+            new TelaEstatisticas().setVisible(true);
+
+        });
+
         btnSair.addActionListener(e -> {
 
             dispose();
@@ -64,6 +73,8 @@ public class TelaHome extends JFrame {
         add(btnVideos);
 
         add(btnPerfil);
+
+        add(btnEstatisticas);
 
         add(btnSair);
 
