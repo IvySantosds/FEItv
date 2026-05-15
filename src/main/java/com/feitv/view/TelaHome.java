@@ -18,7 +18,8 @@ public class TelaHome extends JFrame {
         setLayout(new GridLayout(5, 1, 10, 10));
 
         JLabel titulo =
-                new JLabel("FEItv", SwingConstants.CENTER);
+                new JLabel("FEItv",
+                        SwingConstants.CENTER);
 
         JButton btnPlaylist =
                 new JButton("Playlists");
@@ -35,6 +36,18 @@ public class TelaHome extends JFrame {
         btnPlaylist.addActionListener(e -> {
 
             new TelaPlaylist().setVisible(true);
+
+        });
+
+        btnVideos.addActionListener(e -> {
+
+            new TelaVideo().setVisible(true);
+
+        });
+
+        btnPerfil.addActionListener(e -> {
+
+            new TelaUsuarios().setVisible(true);
 
         });
 
@@ -67,4 +80,3 @@ public class TelaHome extends JFrame {
     }
 
 }
-//teste
