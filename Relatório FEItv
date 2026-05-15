@@ -1,1 +1,207 @@
+Relatório Final — FEItv
+Plataforma de Gerenciamento e Informações de Vídeos
 
+Integrantes: Lucas de Moraes Barbosa e Ivy Santos da Silva
+Tecnologias Utilizadas: Java, Swing, PostgreSQL, JDBC e Arquitetura MVC
+
+1. Introdução
+
+O projeto FEItv foi desenvolvido com o objetivo de criar uma plataforma robusta para o compartilhamento e gerenciamento de informações sobre conteúdos audiovisuais, como filmes e séries. Inspirado em grandes plataformas de streaming, como Netflix e YouTube, o sistema tem como foco principal a organização de metadados dos vídeos, a interação entre usuários por meio de curtidas e o gerenciamento personalizado de listas de reprodução e favoritos.
+
+A aplicação foi projetada para atender dois perfis distintos de usuários:
+
+Usuário Comum: responsável por interagir com os conteúdos, pesquisar vídeos, curtir conteúdos e organizar playlists pessoais;
+Administrador: responsável pela manutenção da plataforma, gerenciamento do catálogo de vídeos e análise de métricas do sistema.
+2. Arquitetura do Sistema (MVC)
+
+O sistema foi desenvolvido seguindo rigorosamente o padrão de arquitetura MVC (Model-View-Controller), garantindo organização, separação de responsabilidades e maior facilidade de manutenção e escalabilidade.
+
+Model (Modelo)
+
+A camada Model representa as entidades do sistema, como:
+
+Usuario
+Video
+Playlist
+
+Essas classes possuem os atributos e métodos de acesso (getters e setters), representando os dados utilizados pela aplicação.
+
+View (Visão)
+
+A camada View foi desenvolvida utilizando a biblioteca Swing, sendo responsável pela interface gráfica da aplicação. Essa camada realiza:
+
+Captura das ações do usuário;
+Exibição de informações;
+Organização visual dos componentes gráficos.
+
+Foram utilizados componentes como:
+
+JFrame
+JTable
+JButton
+JTextField
+GridLayout
+BorderLayout
+Controller / DAO (Persistência)
+
+A comunicação com o banco de dados foi implementada utilizando o padrão DAO (Data Access Object) em conjunto com o JDBC.
+
+Essa camada é responsável por:
+
+Inserção de dados;
+Consultas SQL;
+Atualizações;
+Exclusões;
+Controle da persistência no PostgreSQL.
+3. Tecnologias Utilizadas
+Java
+
+Linguagem principal do projeto, utilizando recursos modernos da versão 17+, como o try-with-resources para melhor gerenciamento de conexões e recursos.
+
+Swing
+
+Biblioteca gráfica utilizada para criação da interface desktop do sistema.
+
+PostgreSQL
+
+Banco de dados relacional responsável pela persistência das informações do sistema.
+
+JDBC (Java Database Connectivity)
+
+Tecnologia utilizada para estabelecer a comunicação entre a aplicação Java e o banco PostgreSQL.
+
+Maven
+
+Ferramenta utilizada para gerenciamento de dependências e automação do projeto.
+
+4. Modelagem do Banco de Dados
+
+O banco de dados foi estruturado visando garantir integridade referencial e organização das informações.
+
+Tabela usuarios
+
+Responsável pelo armazenamento das informações dos usuários:
+
+Nome;
+E-mail (chave única);
+Senha;
+Permissão administrativa.
+Tabela videos
+
+Armazena os dados relacionados aos vídeos:
+
+Título;
+URL;
+Categoria;
+Duração;
+Quantidade de curtidas.
+Tabela playlists
+
+Responsável pelas playlists criadas pelos usuários:
+
+Nome da playlist;
+Descrição;
+Usuário proprietário.
+Tabela playlist_videos
+
+Tabela intermediária utilizada para implementar a relação Many-to-Many entre playlists e vídeos.
+
+5. Funcionalidades Implementadas
+5.1 Módulo do Usuário
+Autenticação
+
+Sistema de login com validação de credenciais diretamente no banco de dados.
+
+Cadastro de Usuários
+
+Tela de registro de novos usuários, definindo automaticamente o perfil como não administrador.
+
+Busca de Conteúdo
+
+Pesquisa de vídeos utilizando o operador ILIKE do PostgreSQL, permitindo buscas parciais e sem diferenciação entre letras maiúsculas e minúsculas.
+
+Interação com Vídeos
+
+Sistema de:
+
+Curtidas;
+Descurtidas;
+Atualização em tempo real da popularidade dos vídeos.
+Gestão de Favoritos
+
+Os usuários podem:
+
+Criar playlists;
+Editar playlists;
+Excluir playlists;
+Adicionar vídeos às playlists;
+Remover vídeos das playlists.
+5.2 Módulo do Administrador
+Controle de Acesso
+
+Após login como administrador, o sistema libera funcionalidades exclusivas dentro da TelaHome.
+
+Gerenciamento de Vídeos
+
+O administrador pode:
+
+Cadastrar novos vídeos;
+Definir categoria e duração;
+Excluir vídeos do sistema.
+Consulta de Usuários
+
+Interface dedicada para visualização dos usuários cadastrados.
+
+Dashboard de Estatísticas
+
+Painel responsável por apresentar métricas da plataforma:
+
+Top 5 Vídeos
+
+Exibição dos vídeos com maior número de curtidas.
+
+Métricas Gerais
+Quantidade total de usuários;
+Quantidade total de vídeos cadastrados.
+6. Processo de Desenvolvimento e Desafios
+
+O desenvolvimento do projeto foi realizado de forma colaborativa utilizando Git e GitHub para controle de versão.
+
+Os principais desafios enfrentados foram:
+
+1. Sincronização de Código
+
+O uso de branches exigiu aprendizado sobre:
+
+Merge;
+Pull;
+Resolução de conflitos;
+Organização do fluxo colaborativo.
+2. Integração com JDBC
+
+A configuração correta dos drivers PostgreSQL e o tratamento de exceções SQL foram fundamentais para evitar falhas de conexão e travamentos.
+
+3. Controle de Níveis de Acesso
+
+Foi implementada uma lógica baseada no objeto Usuario, permitindo ocultar ou exibir componentes da interface conforme o perfil do usuário.
+
+4. Organização da Interface Gráfica
+
+A utilização de layouts como GridLayout e BorderLayout foi essencial para criar uma interface organizada, intuitiva e funcional.
+
+7. Conclusão
+
+O projeto FEItv atende aos requisitos propostos, apresentando uma solução funcional, organizada e estruturada conforme as boas práticas de desenvolvimento Java Desktop.
+
+A utilização da arquitetura MVC proporcionou maior modularização e facilidade de manutenção, enquanto o PostgreSQL garantiu segurança e persistência das informações.
+
+Como resultado final, o sistema apresenta:
+
+Interface funcional;
+Organização em camadas;
+Persistência de dados;
+Controle de acesso;
+Interação entre usuários e conteúdos;
+Escalabilidade para futuras melhorias.
+
+O FEItv demonstra a aplicação prática de conceitos fundamentais de desenvolvimento de software, banco de dados e programação orientada a objetos, consolidando conhecimentos importantes para projetos acadêmicos e aplicações reais.
