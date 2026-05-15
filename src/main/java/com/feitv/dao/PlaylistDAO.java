@@ -1,137 +1,52 @@
 package com.feitv.dao;
 
 import com.feitv.model.Playlist;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistDAO {
 
-    public void cadastrar(Playlist playlist)
-            throws Exception {
-
-        Connection conn =
-                Conexao.conectar();
-
-        String sql =
-                "INSERT INTO playlist(nome, descricao) VALUES (?, ?)";
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
-        stmt.setString(1,
-                playlist.getNome());
-
-        stmt.setString(2,
-                playlist.getDescricao());
-
-        stmt.execute();
-
-        stmt.close();
-
-        conn.close();
-
+    public void cadastrar(Playlist p) {
+        String sql = "INSERT INTO playlists (nome) VALUES (?)";
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, p.getNome());
+            stmt.execute();
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
-    public List<Playlist> listar()
-            throws Exception {
+    public void atualizar(Playlist p) {
+        String sql = "UPDATE playlists SET nome = ? WHERE id = ?";
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, p.getNome());
+            stmt.setInt(2, p.getId());
+            stmt.execute();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
 
-        List<Playlist> lista =
-                new ArrayList<>();
+    public void excluir(int id) {
+        String sql = "DELETE FROM playlists WHERE id = ?";
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.execute();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
 
-        Connection conn =
-                Conexao.conectar();
-
-        String sql =
-                "SELECT * FROM playlist";
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
-        ResultSet rs =
-                stmt.executeQuery();
-
-        while (rs.next()) {
-
-            Playlist p =
-                    new Playlist();
-
-            p.setId(
-                    rs.getInt("id"));
-
-            p.setNome(
-                    rs.getString("nome"));
-
-            p.setDescricao(
-                    rs.getString("descricao"));
-
-            lista.add(p);
-
-        }
-
-        rs.close();
-
-        stmt.close();
-
-        conn.close();
-
+    public List<Playlist> listar() {
+        List<Playlist> lista = new ArrayList<>();
+        try (Connection con = Conexao.conectar();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM playlists ORDER BY id")) {
+            while (rs.next()) {
+                Playlist p = new Playlist();
+                p.setId(rs.getInt("id"));
+                p.setNome(rs.getString("nome"));
+                lista.add(p);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
         return lista;
-
     }
-
-    public void atualizar(Playlist playlist)
-            throws Exception {
-
-        Connection conn =
-                Conexao.conectar();
-
-        String sql =
-                "UPDATE playlist SET nome = ?, descricao = ? WHERE id = ?";
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
-        stmt.setString(1,
-                playlist.getNome());
-
-        stmt.setString(2,
-                playlist.getDescricao());
-
-        stmt.setInt(3,
-                playlist.getId());
-
-        stmt.executeUpdate();
-
-        stmt.close();
-
-        conn.close();
-
-    }
-
-    public void excluir(int id)
-            throws Exception {
-
-        Connection conn =
-                Conexao.conectar();
-
-        String sql =
-                "DELETE FROM playlist WHERE id = ?";
-
-        PreparedStatement stmt =
-                conn.prepareStatement(sql);
-
-        stmt.setInt(1, id);
-
-        stmt.executeUpdate();
-
-        stmt.close();
-
-        conn.close();
-
-    }
-
 }
