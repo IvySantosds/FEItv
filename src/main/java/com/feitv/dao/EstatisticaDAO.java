@@ -8,7 +8,7 @@ import java.util.List;
 public class EstatisticaDAO {
 
     public int getTotalUsuarios() throws Exception {
-        String sql = "SELECT COUNT(*) FROM usuarios";
+        String sql = "SELECT COUNT(*) FROM users";
         try (Connection con = Conexao.conectar();
              PreparedStatement stmt = con.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -29,7 +29,15 @@ public class EstatisticaDAO {
 
     public List<Video> getTop5Videos() throws Exception {
         List<Video> lista = new ArrayList<>();
-        String sql = "SELECT * FROM videos ORDER BY curtidas DESC LIMIT 5";
+        String sql = """
+            SELECT v.id_video, v.titulo,
+                   COUNT(CASE WHEN c.tipo = 'like' THEN 1 END) AS curtidas
+            FROM videos v
+            LEFT JOIN curtidas c ON v.id_video = c.id_video
+            GROUP BY v.id_video, v.titulo
+            ORDER BY curtidas DESC
+            LIMIT 5
+        """;
         try (Connection con = Conexao.conectar();
              PreparedStatement stmt = con.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {

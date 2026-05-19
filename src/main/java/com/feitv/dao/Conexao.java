@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 public class Conexao {
 
     private static final String URL =
-            "jdbc:postgresql://localhost:5432/feitv";
+            "jdbc:postgresql://localhost:5432/FEITV";
 
     private static final String USER = "postgres";
 

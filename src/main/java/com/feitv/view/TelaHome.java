@@ -23,7 +23,7 @@ public class TelaHome extends JFrame {
         JButton btnEstatisticas = new JButton("Estatísticas (Admin)");
         JButton btnSair = new JButton("Sair");
 
-        btnPlaylist.addActionListener(e -> new TelaPlaylist().setVisible(true));
+        btnPlaylist.addActionListener(e -> new TelaPlaylist(user).setVisible(true));
         
         btnVideos.addActionListener(e -> new TelaVideo(user).setVisible(true));
 

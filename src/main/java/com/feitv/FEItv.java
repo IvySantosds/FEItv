@@ -1,17 +1,10 @@
 package com.feitv;
-
-import com.feitv.view.TelaHome;
+import com.feitv.view.TelaLoginNova;
 
 public class FEItv {
-
     public static void main(String[] args) {
-
         java.awt.EventQueue.invokeLater(() -> {
-
-            new TelaHome().setVisible(true);
-
+            new TelaLoginNova().setVisible(true); // ✅ começa pelo login
         });
-
     }
-
 }

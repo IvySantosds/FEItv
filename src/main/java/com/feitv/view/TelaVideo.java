@@ -167,16 +167,8 @@ public class TelaVideo extends JFrame {
 
         add(painelNorte, BorderLayout.NORTH);
 
-        modeloTabela =
-                new DefaultTableModel(
-                        new Object[]{
-                                "ID",
-                                "Título",
-                                "URL",
-                                "Categoria",
-                                "Duração",
-                                "Curtidas"
-                        }, 0);
+        modeloTabela = new DefaultTableModel(
+        new Object[]{"ID", "Título", "URL", "Curtidas"}, 0);
 
         tabelaVideos =
                 new JTable(modeloTabela);
@@ -199,12 +191,10 @@ public class TelaVideo extends JFrame {
             for (Video v : videos) {
 
                 modeloTabela.addRow(new Object[]{
-                        v.getId(),
-                        v.getTitulo(),
-                        v.getUrl(),
-                        v.getCategoria(),
-                        v.getDuracao(),
-                        v.getCurtidas()
+                    v.getId(),
+                    v.getTitulo(),
+                    v.getUrl(),
+                    v.getCurtidas()
                 });
             }
 
@@ -224,10 +214,6 @@ public class TelaVideo extends JFrame {
             v.setTitulo(txtTitulo.getText());
 
             v.setUrl(txtUrl.getText());
-
-            v.setCategoria(txtCategoria.getText());
-
-            v.setDuracao(txtDuracao.getText());
 
             dao.cadastrar(v);
 
@@ -281,7 +267,7 @@ public class TelaVideo extends JFrame {
                 int id =
                         (int) modeloTabela.getValueAt(linha, 0);
 
-                dao.curtirVideo(id);
+                dao.curtirVideo(id, usuario.getId());
 
                 carregarVideos(txtBusca.getText());
             }
@@ -305,7 +291,7 @@ public class TelaVideo extends JFrame {
                 int id =
                         (int) modeloTabela.getValueAt(linha, 0);
 
-                dao.descurtirVideo(id);
+                dao.descurtirVideo(id, usuario.getId());
 
                 carregarVideos(txtBusca.getText());
             }

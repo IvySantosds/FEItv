@@ -3,9 +3,7 @@ package com.feitv.model;
 public class Playlist {
     private int id;
     private String nome;
-    private String descricao;
-
-    public Playlist() {}
+    private int idUsuario;
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -13,6 +11,6 @@ public class Playlist {
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
 
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public int getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
 }
