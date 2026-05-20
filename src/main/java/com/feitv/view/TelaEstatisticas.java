@@ -15,7 +15,6 @@ public class TelaEstatisticas extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
-        // Painel Superior com os Totais
         JPanel painelCards = new JPanel(new GridLayout(1, 2, 10, 10));
         painelCards.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -26,7 +25,6 @@ public class TelaEstatisticas extends JFrame {
         painelCards.add(lblVideos);
         add(painelCards, BorderLayout.NORTH);
 
-        // Painel Central com o Top 5
         DefaultListModel<String> modeloLista = new DefaultListModel<>();
         JList<String> listaTop5 = new JList<>(modeloLista);
         JScrollPane scroll = new JScrollPane(listaTop5);
@@ -34,7 +32,6 @@ public class TelaEstatisticas extends JFrame {
         
         add(scroll, BorderLayout.CENTER);
 
-        // Carregar dados do Banco
         try {
             EstatisticaDAO dao = new EstatisticaDAO();
             lblUsuarios.setText("Total de Usuários: " + dao.getTotalUsuarios());

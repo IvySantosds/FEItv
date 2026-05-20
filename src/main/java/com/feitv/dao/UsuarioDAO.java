@@ -42,7 +42,7 @@ public class UsuarioDAO {
                     u.setNome(rs.getString("nome"));
                     u.setEmail(rs.getString("email"));
                     u.setSenha(rs.getString("senha"));
-                    u.setAdmin(rs.getString("tipo").equals("admin")); // ✅ ENUM → boolean
+                    u.setAdmin(rs.getString("tipo").equals("admin"));
                     return u;
                 }
             }
@@ -64,7 +64,7 @@ public class UsuarioDAO {
                 u.setNome(rs.getString("nome"));
                 u.setEmail(rs.getString("email"));
                 u.setSenha(rs.getString("senha"));
-                u.setAdmin(rs.getString("tipo").equals("admin")); // ✅ ENUM → boolean
+                u.setAdmin(rs.getString("tipo").equals("admin"));
                 lista.add(u);
             }
         }

@@ -46,7 +46,7 @@ public class TelaCadastroUsuario extends javax.swing.JFrame {
 
     JButton btnCadastrar = new JButton("Cadastrar");
 
-    painel.add(new JLabel()); // espaço vazio
+    painel.add(new JLabel());
     painel.add(btnCadastrar);
 
     btnCadastrar.addActionListener(e -> cadastrar());

@@ -18,11 +18,22 @@ public class PlaylistDAO {
     }
 
     public void excluir(int id) {
-        String sql = "DELETE FROM lista_favoritos WHERE id_lista = ?";
-        try (Connection con = Conexao.conectar();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.execute();
+        String deletaVideos = "DELETE FROM lista_videos    WHERE id_lista = ?";
+        String deletaLista  = "DELETE FROM lista_favoritos WHERE id_lista = ?";
+        try (Connection con = Conexao.conectar()) {
+            con.setAutoCommit(false);
+            try {
+                try (PreparedStatement s = con.prepareStatement(deletaVideos)) {
+                    s.setInt(1, id); s.execute();
+                }
+                try (PreparedStatement s = con.prepareStatement(deletaLista)) {
+                    s.setInt(1, id); s.execute();
+                }
+                con.commit();
+            } catch (Exception e) {
+                con.rollback();
+                throw e;
+            }
         } catch (Exception e) { e.printStackTrace(); }
     }
 
@@ -63,6 +74,16 @@ public class PlaylistDAO {
 
     public void adicionarVideoAFavoritos(int idLista, int idVideo) {
         String sql = "INSERT INTO lista_videos (id_lista, id_video) VALUES (?, ?) ON CONFLICT DO NOTHING";
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, idLista);
+            stmt.setInt(2, idVideo);
+            stmt.execute();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    public void removerVideoDaPlaylist(int idLista, int idVideo) {
+        String sql = "DELETE FROM lista_videos WHERE id_lista = ? AND id_video = ?";
         try (Connection con = Conexao.conectar();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, idLista);

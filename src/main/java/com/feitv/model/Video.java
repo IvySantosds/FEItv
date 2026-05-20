@@ -2,6 +2,7 @@ package com.feitv.model;
 
 public class Video {
     private int id;
+    private int idAdmin;
     private String titulo;
     private String descricao;
     private String url;
@@ -9,6 +10,9 @@ public class Video {
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public int getIdAdmin() { return idAdmin; }
+    public void setIdAdmin(int idAdmin) { this.idAdmin = idAdmin; }
 
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
